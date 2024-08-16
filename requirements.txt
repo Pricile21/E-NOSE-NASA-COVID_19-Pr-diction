@@ -8,5 +8,5 @@ pydantic
 scikit-learn
 pandas
 numpy
-tensorflow
-os
+tensorflow==2.17.0
+
