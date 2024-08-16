@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException, File, UploadFile
+from io import StringIO
 import pandas as pd
 import numpy as np
 import tensorflow as tf
@@ -156,4 +157,4 @@ async def make_prediction(file: UploadFile = File(...)):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8016)  # Utiliser localhost pour éviter les problèmes de réseau
+    uvicorn.run(app, host="127.0.0.1", port=8018)  # Utiliser localhost pour éviter les problèmes de réseau
