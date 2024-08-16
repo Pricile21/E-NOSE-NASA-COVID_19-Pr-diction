@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+python-multipart
+pillow
+streamlit
+joblib
+pydantic
+scikit-learn
+pandas
+numpy
+tensorflow
+sklearn
+os
