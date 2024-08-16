@@ -9,5 +9,4 @@ scikit-learn
 pandas
 numpy
 tensorflow
-sklearn
 os
