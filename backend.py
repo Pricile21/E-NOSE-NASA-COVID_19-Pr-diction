@@ -8,10 +8,21 @@ from tensorflow.keras.models import load_model
 
 app = FastAPI()
 
-# Chemins des fichiers de modèle et des données
-MODEL_PATH = r"C:\Users\ROYAL COMPUTER\Documents\project_NASA\best_model.keras"
+# URL of the model file
+MODEL_URL = "https://github.com/Pricile21/E-NOSE-NASA-COVID_19-Pr-diction/raw/master/best_model.keras"
 
-# Charger le modèle
+# Local path to save the downloaded model file
+MODEL_PATH = "best_model.keras"
+
+# Download the model file from the URL
+response = requests.get(MODEL_URL)
+if response.status_code == 200:
+    with open(MODEL_PATH, 'wb') as f:
+        f.write(response.content)
+else:
+    raise Exception("Failed to download the model file.")
+
+# Load the model
 model = load_model(MODEL_PATH)
 
 # Initialiser le scaler globalement
