@@ -1,0 +1,15 @@
+# Fichiers et dossiers d'environnements virtuels
+NASA_env/
+*.pyc
+__pycache__/
+*.dll
+*.pyd
+# Fichiers Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Fichiers et dossiers de configuration IDE
+.vscode/
+.idea/
+
+# Fichiers temporaires
+*.log
