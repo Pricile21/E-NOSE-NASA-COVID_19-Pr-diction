@@ -50,15 +50,25 @@ def preprocess_data(data, is_training=True):
         # Transformer les données de test avec le scaler ajusté sur les données d'entraînement
         X = data
         return X
+# URL of the train data CSV file
+TRAIN_DATA_URL = "https://github.com/Pricile21/E-NOSE-NASA-COVID_19-Pr-diction/raw/master/train_data.csv"
 
 # Endpoint pour obtenir les variables du jeu de données
 @app.get("/variables")
 async def list_variables():
     try:
-        # Charger les données d'entraînement
-        train_data = pd.read_csv(r"C:\Users\ROYAL COMPUTER\Documents\project_NASA\train_data.csv")
-        variables = train_data.columns.tolist()
-        return {"variables": variables}
+        # Download the train data CSV file from the URL
+        response = requests.get(TRAIN_DATA_URL)
+        if response.status_code == 200:
+            # Read the CSV content into a pandas DataFrame
+            csv_content = StringIO(response.text)
+            train_data = pd.read_csv(csv_content)
+            
+            # Extract the column names
+            variables = train_data.columns.tolist()
+            return {"variables": variables}
+        else:
+            raise HTTPException(status_code=response.status_code, detail="Failed to download the train data.")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
