@@ -1,9 +1,11 @@
 # Fichiers et dossiers d'environnements virtuels
 NASA_env/
+NASA_env/Lib/site-packages/tensorflow/python/_pywrap_tensorflow_internal.pyd
 *.pyc
 __pycache__/
 *.dll
 *.pyd
+
 # Fichiers Jupyter Notebook checkpoints
 .ipynb_checkpoints/
 
