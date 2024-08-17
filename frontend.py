@@ -52,7 +52,7 @@ if uploaded_file:
         if st.sidebar.button("Predict"):
             with st.spinner("Analyzing the input..."):
                 # Send the data to the backend API
-                response = requests.post("https://projectfastapi-3.onrender.com/predict", json=records)
+                response = requests.post("https://e-nose-nasa-covid-19-pr-diction-9.onrender.com", json=records)
                 result = response.json()
 
                 # Display the results
