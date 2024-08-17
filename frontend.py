@@ -37,7 +37,7 @@ if uploaded_file:
         if st.sidebar.button("Prédire"):
             with st.spinner("Analyse des données en cours..."):
                 headers = {'Content-Type': 'application/json'}
-                response = requests.post("https://e-nose-nasa-covid-19-pr-diction-10.onrender.com", data=json.dumps(records), headers=headers)
+                response = requests.post("https://e-nose-nasa-covid-19-pr-diction-10.onrender.com/predict", data=json.dumps(records), headers=headers)
                 
                 if response.status_code == 200:
                     result = response.json()
