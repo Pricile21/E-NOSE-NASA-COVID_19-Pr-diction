@@ -23,8 +23,9 @@ else:
     raise Exception("Failed to download the model file.")
 model = load_model(MODEL_PATH)
 
-# Initialiser le scaler globalement
+# Scaler global, avec un attribut pour savoir s'il est ajusté
 scaler = StandardScaler()
+scaler_fitted = False
 
 def preprocess_data(data, is_training=True):
     if 'IndividualID' in data.columns:
@@ -34,7 +35,9 @@ def preprocess_data(data, is_training=True):
     if is_training:
         X = data.drop(columns=['Result'])
         y = data['Result']
+        global scaler_fitted
         scaler.fit(X)
+        scaler_fitted = True
         return X, y
     else:
         X = data
@@ -69,7 +72,7 @@ async def train_model(file: UploadFile = File(...)):
         train_data = pd.read_csv(file_location)
         print(train_data.head())
         X_train, y_train = preprocess_data(train_data, is_training=True)
-        X_train_scaled = scaler.fit_transform(X_train)
+        X_train_scaled = scaler.transform(X_train) if scaler_fitted else scaler.fit_transform(X_train)
         X_train_split, X_val_split, y_train_split, y_val_split = train_test_split(X_train_scaled, y_train, test_size=0.2, random_state=42)
         model = tf.keras.models.Sequential([
             tf.keras.layers.Dense(64, activation='relu', input_shape=(X_train_split.shape[1],)),
@@ -94,6 +97,8 @@ async def make_prediction(file: UploadFile = File(...)):
             f.write(file.file.read())
         test_data = pd.read_csv(file_location)
         X_test = preprocess_data(test_data, is_training=False)
+        if not scaler_fitted:
+            raise HTTPException(status_code=500, detail="Scaler non ajusté. Veuillez entraîner d'abord le modèle.")
         X_test_scaled = scaler.transform(X_test)
         predictions = model.predict(X_test_scaled)
         binary_predictions = (predictions > 0.5).astype(int)
@@ -104,4 +109,4 @@ async def make_prediction(file: UploadFile = File(...)):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8019)
+    uvicorn.run(app, host="0.0.0.0", port=8020)
