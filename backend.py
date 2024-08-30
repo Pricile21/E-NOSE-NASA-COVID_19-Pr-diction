@@ -1,11 +1,11 @@
+import os
+import uvicorn
 from fastapi import FastAPI, HTTPException, File, UploadFile
-from io import StringIO
 import pandas as pd
 import numpy as np
 import tensorflow as tf
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
-from tensorflow.keras.models import load_model, save_model
 
 app = FastAPI()
 
@@ -97,4 +97,6 @@ async def make_prediction(file: UploadFile = File(...)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-
+if __name__ == "__main__":
+    port = int(os.getenv("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port)
