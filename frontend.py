@@ -72,7 +72,7 @@ if uploaded_file:
             if st.sidebar.button("Prédire"):
                 try:
                     response = requests.post(
-                        "'https://e-nose-nasa-covid-19-pr-diction-4-x2e0.onrender.com/predict",  # Corriger l'URL pour appeler le bon endpoint
+                        "https://e-nose-nasa-covid-19-pr-diction-4-x2e0.onrender.com/predict",  # URL correcte
                         files={"file": csv_buffer}
                     )
 
