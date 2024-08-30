@@ -2,9 +2,14 @@ services:
   - type: web
     name: fastapi-app
     repo: https://github.com/Pricile21/E-NOSE-NASA-COVID_19-Pr-diction
-    buildCommand: "pip install -r requirements.txt"
-    startCommand: "uvicorn app:app --host 0.0.0.0 --port 8000"
+    branch: master
+    buildCommand: |
+      pip install -r requirements.txt
+    startCommand: |
+      uvicorn backend:app --host 0.0.0.0 --port 8000
     env:
       - key: PORT
         value: 8000
+    instanceType: starter # Choisissez le type d'instance selon vos besoins
+
 
