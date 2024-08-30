@@ -3,24 +3,16 @@ from io import StringIO
 import pandas as pd
 import numpy as np
 import tensorflow as tf
-import requests
 from sklearn.preprocessing import StandardScaler
-from sklearn.model_selection import train_test_split 
+from sklearn.model_selection import train_test_split
 from tensorflow.keras.models import load_model
 
 app = FastAPI()
 
-# URL of the model file
-MODEL_URL = "https://github.com/Pricile21/E-NOSE-NASA-COVID_19-Pr-diction/raw/master/best_model.keras"
-MODEL_PATH = "best_model.keras"
+# Chemin du modèle
+MODEL_PATH = "https://github.com/Pricile21/E-NOSE-NASA-COVID_19-Pr-diction/raw/master/best_model.keras"
 
-# Download the model file from the URL
-response = requests.get(MODEL_URL)
-if response.status_code == 200:
-    with open(MODEL_PATH, 'wb') as f:
-        f.write(response.content)
-else:
-    raise Exception("Failed to download the model file.")
+# Charger le modèle
 model = load_model(MODEL_PATH)
 
 # Scaler global, avec un attribut pour savoir s'il est ajusté
@@ -43,7 +35,7 @@ def preprocess_data(data, is_training=True):
         X = data
         return X
 
-TRAIN_DATA_URL = "https://github.com/Pricile21/E-NOSE-NASA-COVID_19-Pr-diction/raw/master/train_data.csv"
+TRAIN_DATA_PATH = "https://github.com/Pricile21/E-NOSE-NASA-COVID_19-Pr-diction/raw/master/train_data.csv"
 
 @app.get("/")
 async def root():
@@ -52,14 +44,9 @@ async def root():
 @app.get("/variables")
 async def list_variables():
     try:
-        response = requests.get(TRAIN_DATA_URL)
-        if response.status_code == 200:
-            csv_content = StringIO(response.text)
-            train_data = pd.read_csv(csv_content)
-            variables = train_data.columns.tolist()
-            return {"variables": variables}
-        else:
-            raise HTTPException(status_code=response.status_code, detail="Failed to download the train data.")
+        train_data = pd.read_csv(TRAIN_DATA_PATH)
+        variables = train_data.columns.tolist()
+        return {"variables": variables}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -109,4 +96,4 @@ async def make_prediction(file: UploadFile = File(...)):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8020)
+    uvicorn.run(app, host="0.0.0.0", port=8000)
