@@ -6,14 +6,29 @@ import tensorflow as tf
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.models import load_model
+import requests
+import os
 
 app = FastAPI()
 
-# Chemin du modèle
-MODEL_PATH = "https://github.com/Pricile21/E-NOSE-NASA-COVID_19-Pr-diction/blob/master/best_model.keras"
+# Chemin du modèle GitHub
+MODEL_URL = "https://raw.githubusercontent.com/Pricile21/E-NOSE-NASA-COVID_19-Pr-diction/master/best_model.keras"
 
-# Charger le modèle
-model = load_model(MODEL_PATH)
+# Chemin local temporaire pour le modèle
+MODEL_LOCAL_PATH = "best_model.keras"
+
+# Téléchargement du modèle depuis GitHub
+def download_model():
+    response = requests.get(MODEL_URL)
+    with open(MODEL_LOCAL_PATH, 'wb') as f:
+        f.write(response.content)
+
+# Vérifier si le modèle existe localement, sinon le télécharger
+if not os.path.exists(MODEL_LOCAL_PATH):
+    download_model()
+
+# Charger le modèle localement
+model = load_model(MODEL_LOCAL_PATH)
 
 # Scaler global, avec un attribut pour savoir s'il est ajusté
 scaler = StandardScaler()
@@ -35,7 +50,7 @@ def preprocess_data(data, is_training=True):
         X = data
         return X
 
-TRAIN_DATA_PATH = "https://github.com/Pricile21/E-NOSE-NASA-COVID_19-Pr-diction/blob/master/train_data.csv"
+TRAIN_DATA_PATH = "https://raw.githubusercontent.com/Pricile21/E-NOSE-NASA-COVID_19-Pr-diction/master/train_data.csv"
 
 @app.get("/")
 async def root():
@@ -68,10 +83,10 @@ async def train_model(file: UploadFile = File(...)):
             tf.keras.layers.Dense(1, activation='sigmoid')
         ])
         model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
-        model_ckp = tf.keras.callbacks.ModelCheckpoint(filepath=MODEL_PATH, monitor="val_accuracy", mode="max", save_best_only=True)
+        model_ckp = tf.keras.callbacks.ModelCheckpoint(filepath=MODEL_LOCAL_PATH, monitor="val_accuracy", mode="max", save_best_only=True)
         stop = tf.keras.callbacks.EarlyStopping(monitor="val_accuracy", patience=200, restore_best_weights=True)
         model.fit(X_train_split, y_train_split, epochs=200, batch_size=2048, validation_data=(X_val_split, y_val_split), callbacks=[model_ckp, stop])
-        model.save(MODEL_PATH)
+        model.save(MODEL_LOCAL_PATH)
         return {"message": "Modèle entraîné avec succès."}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
