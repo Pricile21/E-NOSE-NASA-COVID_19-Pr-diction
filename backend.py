@@ -10,7 +10,7 @@ from tensorflow.keras.models import load_model
 app = FastAPI()
 
 # Chemin du modèle
-MODEL_PATH = "https://github.com/Pricile21/E-NOSE-NASA-COVID_19-Pr-diction/raw/master/best_model.keras"
+MODEL_PATH = "https://github.com/Pricile21/E-NOSE-NASA-COVID_19-Pr-diction/blob/master/best_model.keras"
 
 # Charger le modèle
 model = load_model(MODEL_PATH)
