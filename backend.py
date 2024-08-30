@@ -35,7 +35,7 @@ def preprocess_data(data, is_training=True):
         X = data
         return X
 
-TRAIN_DATA_PATH = "https://github.com/Pricile21/E-NOSE-NASA-COVID_19-Pr-diction/raw/master/train_data.csv"
+TRAIN_DATA_PATH = "https://github.com/Pricile21/E-NOSE-NASA-COVID_19-Pr-diction/blob/master/train_data.csv"
 
 @app.get("/")
 async def root():
